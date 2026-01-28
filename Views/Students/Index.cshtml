@@ -1,0 +1,206 @@
+﻿@model IEnumerable<StudentPortal.Models.Student>
+
+<div class="container-fluid mt-3">
+
+    <!-- ================= DASHBOARD ================= -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="text-uppercase">Total Students</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalStudents</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 bg-success text-white">
+                <div class="card-body">
+                    <h6 class="text-uppercase">Added Today</h6>
+                    <h2 class="fw-bold">@ViewBag.TodayStudents</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CSV UPLOAD ================= -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form asp-action="ImportCSV" method="post" enctype="multipart/form-data" class="row g-2 align-items-center">
+                <div class="col-md-4">
+                    <input type="file" name="csvFile" accept=".csv" class="form-control" required />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Upload CSV
+                    </button>
+                </div>
+                <div class="col-md-6 text-muted">
+                    CSV format: FullName, Email, Mobile, Gender, Course, DateOfBirth, PhotoPath
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= ACTION TOOLBAR ================= -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <a asp-action="Create" class="btn btn-primary">
+            + Add Student
+        </a>
+        <a asp-action="ExportCSV" class="btn btn-outline-success">
+            Export CSV
+        </a>
+        <a asp-action="ExportPDF" class="btn btn-outline-danger">
+            Export PDF
+        </a>
+        <a asp-action="ExportCSV" class="btn btn-outline-secondary">
+            Download CSV Format
+        </a>
+    </div>
+
+    <!-- ================= FILTERS & PAGE SIZE ================= -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="fw-bold">Course</label>
+                    <select name="course" class="form-select">
+                        <option value="">All</option>
+                        @foreach (var c in ViewBag.Courses)
+                        {
+                            <option value="@c" selected="@(ViewBag.SelectedCourse == c)">
+                                @c
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="fw-bold">Gender</label>
+                    <select name="gender" class="form-select">
+                        <option value="">All</option>
+                        <option value="Male" selected="@(ViewBag.SelectedGender == "Male")">Male</option>
+                        <option value="Female" selected="@(ViewBag.SelectedGender == "Female")">Female</option>
+                        <option value="Other" selected="@(ViewBag.SelectedGender == "Other")">Other</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="fw-bold">Records per page</label>
+                    <select name="pageSize" class="form-select" onchange="this.form.submit()">
+                        <option value="5" selected="@((int)ViewBag.PageSize == 5)">5</option>
+                        <option value="10" selected="@((int)ViewBag.PageSize == 10)">10</option>
+                        <option value="20" selected="@((int)ViewBag.PageSize == 20)">20</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary me-2">
+                        Apply Filter
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Clear
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= STUDENT TABLE ================= -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="text-center">Photo</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var s in Model)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                <img src="@(string.IsNullOrEmpty(s.PhotoPath)
+                                                 ? "/images/user-placeholder.png"
+                                                 : s.PhotoPath)"
+                                     width="45"
+                                     height="45"
+                                     class="rounded-circle"
+                                     style="object-fit:cover; border:1px solid #ddd;" />
+
+                            </td>
+                            <td class="fw-bold">@s.FullName</td>
+                            <td>@s.Email</td>
+                            <td>
+                                <span class="badge bg-info text-dark">@s.Course</span>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@s.StudentId"
+                                   class="btn btn-warning btn-sm">Edit</a>
+
+                                <a asp-action="Details" asp-route-id="@s.StudentId"
+                                   class="btn btn-info btn-sm">View</a>
+
+                                <a asp-action="Delete" asp-route-id="@s.StudentId"
+                                   onclick="return confirm('Are you sure?')"
+                                   class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= PAGINATION ================= -->
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-pageSize="@ViewBag.PageSize">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <!-- ================= RECENT STUDENTS ================= -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-header bg-light">
+            <h6 class="mb-0">Recent Students</h6>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-sm table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in ViewBag.RecentStudents)
+                    {
+                        <tr>
+                            <td>@r.FullName</td>
+                            <td>@r.Email</td>
+                            <td>@r.Course</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

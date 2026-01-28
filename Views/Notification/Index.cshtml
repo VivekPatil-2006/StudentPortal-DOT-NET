@@ -1,0 +1,64 @@
+﻿@model IEnumerable<StudentPortal.Models.Notification>
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Notifications</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (!Model.Any())
+            {
+                <p class="text-muted">No notifications available</p>
+            }
+            else
+            {
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var n in Model)
+                        {
+                            <tr class="@(n.IsRead ? "" : "table-warning")">
+                                <td>@n.Message</td>
+                                <td>@n.CreatedAt.ToString("dd MMM yyyy hh:mm tt")</td>
+                                <td>
+                                    @if (n.IsRead)
+                                    {
+                                        <span class="badge bg-success">Read</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Unread</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!n.IsRead)
+                                    {
+                                        <a asp-action="MarkRead"
+                                           asp-route-id="@n.NotificationId"
+                                           class="btn btn-sm btn-primary">
+                                            Mark Read
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+
+</div>

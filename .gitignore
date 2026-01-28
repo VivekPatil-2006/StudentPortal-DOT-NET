@@ -1,0 +1,14 @@
+# Visual Studio
+.vs/
+*.user
+
+# Build folders
+bin/
+obj/
+
+# ASP.NET Core
+appsettings.Development.json
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,94 @@
+﻿@model dynamic
+
+<div class="container mt-4">
+    <div class="card shadow-lg border-0">
+
+        <!-- HEADER -->
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Student Profile</h4>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+
+                <!-- ================= PROFILE COLUMN ================= -->
+                <div class="col-md-4 text-center border-end">
+                    <img src="@(string.IsNullOrEmpty(Model.Student.PhotoPath)
+                                                         ? "/images/user-placeholder.png"
+                                                         : Model.Student.PhotoPath)"
+                         class="rounded-circle mb-3"
+                         width="140"
+                         height="140"
+                         style="object-fit:cover;" />
+
+                    <h5 class="fw-bold">@Model.Student.FullName</h5>
+                    <p class="text-muted mb-1">@Model.Student.Email</p>
+                    <span class="badge bg-info text-dark">
+                        @Model.Student.Course
+                    </span>
+
+                    <hr />
+
+                    <p class="mb-1"><b>Gender:</b> @Model.Student.Gender</p>
+                    <p class="mb-1"><b>Mobile:</b> @Model.Student.Mobile</p>
+                </div>
+
+                <!-- ================= DETAILS COLUMN ================= -->
+                <div class="col-md-8">
+
+                    <!-- STUDENT INFO -->
+                    <h5 class="text-primary mb-3">Student Information</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><b>Full Name:</b> @Model.Student.FullName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Email:</b> @Model.Student.Email</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Course:</b> @Model.Student.Course</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>
+                                <b>Date of Birth:</b>
+                                @(Model.Student.DateOfBirth?.ToString("dd MMM yyyy") ?? "-")
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- PARENT INFO -->
+                    <h5 class="text-primary mb-3">Parent Details</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><b>Father Name:</b> @Model.Parent?.FatherName</p>
+                            <p><b>Father Mobile:</b> @Model.Parent?.FatherMobile</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><b>Mother Name:</b> @Model.Parent?.MotherName</p>
+                            <p><b>Mother Mobile:</b> @Model.Parent?.MotherMobile</p>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <p><b>Address:</b> @Model.Parent?.Address</p>
+                        </div>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="mt-4 text-end">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Back to List
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.Student.StudentId"
+                           class="btn btn-warning">
+                            Edit Profile
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

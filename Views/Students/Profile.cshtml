@@ -1,0 +1,29 @@
+﻿@model StudentPortal.Models.Student
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h4>My Profile</h4>
+
+            <img src="@Model.PhotoPath"
+                 width="100"
+                 class="rounded-circle mb-3" />
+
+            <p><b>Name:</b> @Model.FullName</p>
+            <p><b>Email:</b> @Model.Email</p>
+            <p><b>Course:</b> @Model.Course</p>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.StudentId"
+               class="btn btn-warning">
+                Edit Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
